@@ -1,6 +1,8 @@
-module z80_mini_com(n_RST, CLK50M);
+module z80_mini_com(n_RST, CLK50M, TXD, RXD);
 
 input n_RST, CLK50M;
+input RXD;
+output TXD;
 
 wire cpu_clk;
 wire cpu_mreq, cpu_ioreq;
@@ -11,8 +13,24 @@ wire [7:0] cpu_data_in;
 reg [3:0] rst_delay_cnt;
 wire cpu_rst;
 
+wire sio_clk;
+
 cpu_clk_div cpu_clk_div(
 	.n_rst(n_RST), .clk(CLK50M), .cpu_clk(cpu_clk)
+);
+
+sio_clk_div sio_clk_div(
+	.n_rst(n_RST), .clk(CLK50M), .sio_clk(sio_clk)
+);
+
+simple_sio sio(
+	.n_rst(n_RST), .clk(sio_clk),
+	.ce((cpu_addr[7:1] == 7'b100_0010)? 1'b1 : 1'b0),	// address decoder 0x84-0x85
+	.rd(cpu_iorq & cpu_rd), .wr(cpu_iorq & cpu_wr),
+	.cd(cpu_addr[0]),
+	.data_in(cpu_data_out),
+	.data_out(cpu_data_in),
+	.txd(TXD), .rxd(RXD)
 );
 
 //test_microm microm(

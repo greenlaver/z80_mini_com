@@ -1,6 +1,6 @@
 module sio_clk_div(n_rst, clk, sio_clk);
 
-parameter SIO_CLK_SCALER = 1302;	// 50M/9600/4=1302
+parameter SIO_CLK_SCALER = 1302;	// 50M/9600/2/2=1302, 19.2kHz
 
 input n_rst;
 input clk;	// 50MHz
@@ -23,7 +23,7 @@ always @(posedge clk or negedge n_rst) begin
 	end
 end
 
-assign cpu_clk = q;
+assign sio_clk = q;
 
 endmodule
 

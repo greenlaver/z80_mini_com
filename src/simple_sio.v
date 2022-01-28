@@ -1,6 +1,6 @@
 module simple_sio(n_rst, clk, ce, rd, wr, cd, data_in, data_out, txd, rxd);
 
-input n_rst, clk;		// clk freq : Baudrate * 4
+input n_rst, clk;		// clk freq : Baudrate * 2
 input ce, rd, wr;
 input cd;				// HIGH: Command / LOW: Data
 input [7:0] data_in;
@@ -18,8 +18,8 @@ reg txd_d;
 
 reg [7:0] data_out_buf;
 
-reg [5:0] rx_cnt;
-reg [5:0] tx_cnt;
+reg [4:0] rx_cnt;
+reg [4:0] tx_cnt;
 
 always @(posedge clk or negedge n_rst) begin
 	if(!n_rst) begin
@@ -38,28 +38,28 @@ always @(posedge clk or negedge n_rst) begin
 		rxd_dd  <= 1'b1;
 		
 		// timing counter
-		rx_cnt <= 6'h00;
-		tx_cnt <= 6'h00;
+		rx_cnt <= 5'h00;
+		tx_cnt <= 5'h00;
 	end
 	else begin
 		// RXD recieve : when already RX_ready, new-comming data will be ignored
 		if(!rx_ready) begin
 			// detect start bit edge
 			if(rxd_dd && !rxd_d) begin
-				rx_cnt <= 6'h1;
+				rx_cnt <= 5'h1;
 			end
 			
-			if(rx_cnt > 6'h00) begin
-				rx_cnt <= rx_cnt + 6'h1;
+			if(rx_cnt > 5'h00) begin
+				rx_cnt <= rx_cnt + 5'h1;
 				
 				// Recieve Data (Shift register, data from RXD)
-				if(rx_cnt[1:0] == 2'b00) begin
+				if(rx_cnt[0] == 1'b0) begin
 					rx_buf <= {rxd_d, rx_buf[7:1]};
 				end
 				
 				// Set RX_ready flag after recieved data[7]
-				if(rx_cnt[5:2] == 4'h8) begin
-					rx_cnt <= 6'h0;
+				if(rx_cnt[4:1] == 4'h8) begin
+					rx_cnt <= 5'h0;
 					rx_ready <= 1'b1;
 				end
 			end
@@ -67,50 +67,54 @@ always @(posedge clk or negedge n_rst) begin
 		
 		// TXD transmit
 		if(!tx_ready) begin
-			tx_cnt <= tx_cnt + 6'h1;
+			tx_cnt <= tx_cnt + 5'h1;
 			
 			// Send LSB data to TXD
 			txd_d <= tx_buf[0];
 			
-			if(tx_cnt[1:0] == 2'b01) begin
+			if(tx_cnt[0] == 1'b1) begin
 				// Right shift
 				tx_buf = {1'b1, tx_buf[9:1]};
 			end
 			
-			if(tx_cnt[5:2] == 4'hA) begin
+			if(tx_cnt[4:1] == 4'hA) begin	// 1[start]+8[data]+1[stop]=10bit
 				// Finish TXD transmit
 				tx_ready <= 1'b1;
 				txd_d <= 1'b1;
 			end
 		end
 		
-		// RD
-		if(rd) begin
-			// Command read
-			if(cd) begin
-				data_out_buf <= {6'h00, rx_ready, tx_ready};
+		// Chip enabled
+		if(ce) begin
+			// RD
+			if(rd) begin
+				// Command read
+				if(cd) begin
+					data_out_buf <= {6'h00, rx_ready, tx_ready};
+				end
+				// Data read
+				else begin
+					data_out_buf <= rx_buf;
+					// Data read cause clear RX_ready
+					rx_ready <= 1'b0;
+				end
 			end
-			// Data read
-			else begin
-				data_out_buf <= rx_buf;
-				// Data read cause clear RX_ready
-				rx_ready <= 1'b0;
+			
+			// WR
+			if(wr) begin
+				// Data write
+				if(!cd) begin
+					// stop_bit + data[7:0] + start_bit
+					tx_buf <= {1'b1, data_in, 1'b0};
+					tx_ready <= 1'b0;
+					tx_cnt <= 5'h1;
+				end
 			end
 		end
 		else begin
+			// free data bus
 			data_out_buf <= 8'hzz;
-		end
-		
-		if(wr) begin
-			// Data write
-			if(!cd) begin
-				// stop_bit + data[7:0] + start_bit
-				tx_buf <= {1'b1, data_in, 1'b0};
-				tx_ready <= 1'b0;
-				tx_cnt <= 6'h1;
-			end
-		end
-				
+		end		
 		
 		// signal buffer
 		rxd_dd <= rxd_d;
