@@ -1,0 +1,5 @@
+module z80_mini_com();
+
+fz80 i_fz80();
+
+endmodule

@@ -1,0 +1,9 @@
+module clk_div(master_clk, cpu_clk, sio_clk);
+
+input master_clk;
+output cpu_clk, sio_clk;
+
+
+
+endmodule
+

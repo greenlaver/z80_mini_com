@@ -1,0 +1,9 @@
+module test_microm(n_rst, clk);
+
+input n_rst, clk;
+
+always @(posedge clk or negedge n_rst) begin
+	
+end
+
+endmodule

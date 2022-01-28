@@ -1,0 +1,13 @@
+`timescale 1ns/1ps
+
+module tb_z80_mini_com;
+
+parameter SYSCLK_TICK = 5;
+parameter RST_WIDTH = 2;
+
+reg n_rst, clk;
+
+z80_mini_com z80_mini_com(
+	.n_RST(n_rst), .CLK50M(clk)
+);
+
