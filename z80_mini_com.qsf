@@ -60,21 +60,23 @@ set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_symbol
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_signal_integrity
 set_global_assignment -name EDA_GENERATE_FUNCTIONAL_NETLIST OFF -section_id eda_board_design_boundary_scan
-set_global_assignment -name VERILOG_FILE src/fz80.v
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name FLOW_ENABLE_POWER_ANALYZER ON
 set_global_assignment -name POWER_DEFAULT_INPUT_IO_TOGGLE_RATE "12.5 %"
-set_global_assignment -name VERILOG_FILE src/z80_mini_com.v
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name QIP_FILE rom.qip
-set_global_assignment -name VERILOG_FILE src/clk_div.v
-set_global_assignment -name VERILOG_FILE src/test_microm.v
-set_global_assignment -name VERILOG_FILE src/tb_z80_mini_com.v
 set_global_assignment -name EDA_TEST_BENCH_NAME tb_z80_mini_com -section_id eda_simulation
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id tb_z80_mini_com
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME tb_z80_mini_com -section_id tb_z80_mini_com
 set_global_assignment -name EDA_TEST_BENCH_FILE src/tb_z80_mini_com.v -section_id tb_z80_mini_com
+set_global_assignment -name VERILOG_FILE src/sio_clk_div.v
+set_global_assignment -name VERILOG_FILE src/cpu_clk_div.v
+set_global_assignment -name VERILOG_FILE src/fz80.v
+set_global_assignment -name VERILOG_FILE src/z80_mini_com.v
+set_global_assignment -name VERILOG_FILE src/test_microm.v
+set_global_assignment -name VERILOG_FILE src/tb_z80_mini_com.v
+set_global_assignment -name QIP_FILE ip_rom.qip
+set_global_assignment -name VERILOG_FILE src/simple_sio.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

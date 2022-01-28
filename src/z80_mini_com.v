@@ -11,14 +11,16 @@ wire [7:0] cpu_data_in;
 reg [3:0] rst_delay_cnt;
 wire cpu_rst;
 
-clk_div clk_div(
+cpu_clk_div cpu_clk_div(
 	.n_rst(n_RST), .clk(CLK50M), .cpu_clk(cpu_clk)
 );
 
-test_microm microm(
-	.n_rst(n_RST), .clk(CLK50M), .n_ce(~cpu_mreq), .n_oe(~cpu_rd), .addr(cpu_addr[3:0]), .data(cpu_data_in)
+//test_microm microm(
+//	.n_rst(n_RST), .clk(CLK50M), .n_ce(~cpu_mreq), .n_oe(~cpu_rd), .addr(cpu_addr[3:0]), .data(cpu_data_in)
+//);
+ip_rom ip_rom(
+	.address(cpu_addr[13:0]), .clock(CLK50M), .q(cpu_data_in)
 );
-
 
 fz80 fz80(
 	.data_in(cpu_data_in), .reset_in(cpu_rst), .clk(cpu_clk), .adr(cpu_addr),
