@@ -2,15 +2,15 @@
 
 module tb_z80_mini_com;
 
-parameter SYSCLK_TICK = 4;
+parameter SYSCLK_TICK = 20;	// 50MHz, T=20ns
 parameter RST_WIDTH = 1000;
 parameter UART_WIDTH = 1302*4;
 
-reg n_rst, sys_clk, txd;
-wire rxd;
+reg n_rst, sys_clk, rxd;
+wire txd;
 
 z80_mini_com z80_mini_com(
-	.n_RST(n_rst), .CLK50M(sys_clk), .TXD(rxd), .RXD(txd)
+	.n_RST(n_rst), .CLK50M(sys_clk), .TXD(txd), .RXD(rxd)
 );
 
 /* Clock Generator */
@@ -23,16 +23,16 @@ task send_uart (
   input [7:0] dat
 );
 begin
-                              txd = 1'b0;		// start bit
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[0];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[1];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[2];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[3];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[4];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[5];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[6];
-  #(UART_WIDTH * SYSCLK_TICK) txd = dat[7];
-  #(UART_WIDTH * SYSCLK_TICK) txd = 1'b1;		// stop bit
+                              rxd = 1'b0;		// start bit
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[0];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[1];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[2];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[3];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[4];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[5];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[6];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = dat[7];
+  #(UART_WIDTH * SYSCLK_TICK) rxd = 1'b1;		// stop bit
 
 end
 endtask
@@ -42,14 +42,16 @@ initial begin
   /* Init */
   sys_clk = 1'b1;
   n_rst = 1'b1;
-  txd = 1'b1;
+  rxd = 1'b1;
 
   /* Reset */
   #(RST_WIDTH * SYSCLK_TICK) n_rst = 1'b0;
   #(RST_WIDTH * SYSCLK_TICK) n_rst = 1'b1;
 
-  #(1000 * SYSCLK_TICK) send_uart(8'h41);	// A
-  #(30000 * SYSCLK_TICK)
+   #(30000 * SYSCLK_TICK) send_uart(8'h41);	// A
+   //#(2000 * SYSCLK_TICK)
+   #(100000 * SYSCLK_TICK)
+  
   
   $display("End test");
   $stop;
