@@ -90,7 +90,7 @@ module ip_rom (
 `ifdef NO_PLI
 		altsyncram_component.init_file = "/home/aonori/Documents/FPGA/FPGA2I/projects/z80_mini_com/test/stack/stack.rif"
 `else
-		altsyncram_component.init_file = "/home/aonori/Documents/FPGA/FPGA2I/projects/z80_mini_com/test/stack/stack.hex"
+		altsyncram_component.init_file = "/home/aonori/Documents/FPGA/FPGA2I/projects/z80_mini_com/test/uart_echo/uart_echo.hex"
 //		altsyncram_component.init_file = "/home/aonori/Documents/FPGA/FPGA2I/projects/z80_mini_com/test/tx/tx.hex"
 `endif
 ,
