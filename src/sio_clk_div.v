@@ -1,6 +1,6 @@
 module sio_clk_div(n_rst, clk, sio_clk);
 
-parameter SIO_CLK_SCALER = 1302;	// 50M/9600/2/2=1302, 19.2kHz
+parameter SIO_CLK_SCALER = 651;	// 50M/9600/2/2/2=651, 38.3kHz
 
 input n_rst;
 input clk;	// 50MHz
