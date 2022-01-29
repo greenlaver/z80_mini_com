@@ -38,8 +38,17 @@ simple_sio sio(
 //	.n_rst(n_RST), .clk(CLK50M), .n_ce(~cpu_mreq), .n_oe(~cpu_rd), .addr(cpu_addr[3:0]), .data(cpu_data_in)
 //);
 ip_rom_wrapper ip_rom_wrapper(
-	.address(cpu_addr[13:0]), .clock(CLK50M),
-	.rden(cpu_mreq & cpu_rd), .q(cpu_data_in)
+	.address(cpu_addr[8:0]), .clock(CLK50M),
+	.rden(cpu_mreq & cpu_rd & cpu_addr[15] == 1'b0),
+	.q(cpu_data_in)
+);
+
+ip_ram_wrapper ip_ram_wrapper(
+	.address(cpu_addr[8:0]), .clock(CLK50M),
+	.data_in(cpu_data_out),
+	.rden(cpu_mreq & cpu_rd & cpu_addr[15] == 1'b1),
+	.wren(cpu_mreq & cpu_wr & cpu_addr[15] == 1'b1),
+	.q(cpu_data_in)
 );
 
 fz80 fz80(

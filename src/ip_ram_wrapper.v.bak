@@ -1,12 +1,13 @@
-module ip_rom_wrapper(address, clock, rden, q);
+module ip_ram_wrapper(address, clock, data_in, rden, wren, q);
 
 input [8:0] address;
-input clock, rden;
+input	[7:0] data_in;
+input clock, rden, wren;
 output [7:0] q;
 
 wire [7:0] mem_q;
 
-ip_rom ip_rom(
+ip_ram ip_ram(
 	.address(address), .clock(clock),
 	.rden(rden), .q(mem_q)
 );
