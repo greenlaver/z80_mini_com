@@ -42,15 +42,21 @@ simple_sio sio(
 //	.rden(cpu_mreq & cpu_rd & cpu_addr[15] == 1'b0),
 //	.q(cpu_data_in)
 //);
-uart_microm microm(
+//uart_microm microm(
+//	.n_rst(n_RST), .clk(CLK50M),
+//	.ce(cpu_mreq & cpu_addr[15] == 1'b0),
+//	.oe(cpu_rd),
+//	.addr(cpu_addr[5:0]), .data(cpu_data_in)
+//);
+basic_microm microm(
 	.n_rst(n_RST), .clk(CLK50M),
 	.ce(cpu_mreq & cpu_addr[15] == 1'b0),
 	.oe(cpu_rd),
-	.addr(cpu_addr[5:0]), .data(cpu_data_in)
+	.addr(cpu_addr[12:0]), .data(cpu_data_in)
 );
 
 ip_ram_wrapper ip_ram_wrapper(
-	.address(cpu_addr[8:0]), .clock(CLK50M),
+	.address(cpu_addr[14:0]), .clock(CLK50M),
 	.data_in(cpu_data_out),
 	.rden(cpu_mreq & cpu_rd & cpu_addr[15] == 1'b1),
 	.wren(cpu_mreq & cpu_wr & cpu_addr[15] == 1'b1),

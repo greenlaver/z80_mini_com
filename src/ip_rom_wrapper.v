@@ -1,6 +1,6 @@
 module ip_rom_wrapper(address, clock, rden, q);
 
-input [8:0] address;
+input [14:0] address;
 input clock, rden;
 output [7:0] q;
 
