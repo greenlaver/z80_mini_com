@@ -10,13 +10,13 @@ reg n_rst, sys_clk, rxd;
 wire txd;
 
 z80_mini_com z80_mini_com(
-	.n_RST(n_rst), .CLK50M(sys_clk), .TXD(txd), .RXD(rxd)
+	.n_RST(n_rst), .CLK24M(sys_clk), .TXD(txd), .RXD(rxd)
 );
 
 /* Clock Generator */
 always #(SYSCLK_TICK / 2) begin
   sys_clk = ~sys_clk;
-end
+end  
 
 /* UART Data Send */
 task send_uart (
@@ -42,7 +42,7 @@ initial begin
   /* Init */
   sys_clk = 1'b1;
   n_rst = 1'b1;
-  rxd = 1'b1;
+  rxd = 1'b1;  
 
   /* Reset */
   #(RST_WIDTH * SYSCLK_TICK) n_rst = 1'b0;
@@ -54,7 +54,15 @@ initial begin
   
   
   $display("End test");
-  $stop;
+//  $stop;  
+  $finish;
+end
+
+/* VCD dump */
+initial begin
+  $display("---- wave dump ----");
+  $dumpfile("tb_z80_mini_com.vcd");
+  $dumpvars(0, tb_z80_mini_com);
 end
 
 endmodule

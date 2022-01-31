@@ -107,3 +107,4 @@ Temporary Items
 # End of https://www.toptal.com/developers/gitignore/api/alteraquartusii,macos,linux
 
 !README.md
+!al_ip/

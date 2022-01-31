@@ -15,7 +15,7 @@ always @(posedge clk or negedge n_rst) begin
 	end
 end
 
-assign cpu_clk = count[4];	// div 1/32 = 1.5625MHz
+assign cpu_clk = count[2];	// div 1/32 = 1.5625MHz
 
 endmodule
 
